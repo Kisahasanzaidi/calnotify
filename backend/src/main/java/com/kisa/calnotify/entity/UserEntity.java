@@ -8,21 +8,21 @@ import com.mongodb.lang.NonNull;
 
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Data
+@NoArgsConstructor
 @Document(collection = "users")
 public class UserEntity {
 
     @Id  
     private ObjectId userId;
-    private String userName;
      @NonNull
     private String email;
     @NonNull
     private String password;
-    private String phoneNumber;
     private String role;
 }
