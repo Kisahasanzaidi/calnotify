@@ -29,6 +29,7 @@ public class UserService implements UserDetailsService {
         if(user.getRole() == null || user.getRole().isEmpty()) {
             user.setRole("USER"); 
         }
+        if (user.getName() == null) user.setName("");
 
         return userRepository.save(user);
     }

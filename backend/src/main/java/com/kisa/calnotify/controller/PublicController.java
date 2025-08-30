@@ -51,15 +51,12 @@ public class PublicController {
     @PostMapping("/login")
 public ResponseEntity<String> login(@RequestBody UserEntity user) {
     try {
-        // load user; UserDetailsServiceImpl will throw UsernameNotFoundException if not found
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
 
-        // verify password using PasswordEncoder (assumes passwords are stored encoded)
         if (!passwordEncoder.matches(user.getPassword(), userDetails.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password");
         }
 
-        // generate JWT
         String jwt = jwtUtil.generateToken(userDetails.getUsername());
         return ResponseEntity.ok(jwt);
 

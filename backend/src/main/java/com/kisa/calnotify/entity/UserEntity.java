@@ -25,4 +25,6 @@ public class UserEntity {
     @NonNull
     private String password;
     private String role;
+     private String name;
+   
 }
