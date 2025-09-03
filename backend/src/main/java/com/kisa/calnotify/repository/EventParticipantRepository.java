@@ -13,7 +13,7 @@ public interface EventParticipantRepository extends MongoRepository<EventPartici
 
     List<EventParticipantEntity> findByEventId(ObjectId eventId);
 
-    List<EventParticipantEntity> findByUserIdAndStatus(ObjectId userId, ParticipantStatus status);
+    List<EventParticipantEntity> findByUserId(ObjectId userId);
 
     List<EventParticipantEntity> findByEventIdAndStatus(ObjectId eventId, ParticipantStatus status);
 

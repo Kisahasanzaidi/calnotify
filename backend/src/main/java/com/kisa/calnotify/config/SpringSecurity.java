@@ -42,7 +42,8 @@ public class SpringSecurity {
             .authorizeHttpRequests(request -> request
           .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
           .requestMatchers("/public/**").permitAll()
-          .requestMatchers("/user/**").hasAnyRole("ADMIN","USER")
+          .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN" )
+          .requestMatchers("/events/**").hasAnyRole("USER", "ADMIN" )
            .requestMatchers("/admin/**").hasRole("ADMIN")
            .anyRequest().authenticated()
 )
@@ -63,6 +64,7 @@ public class SpringSecurity {
         configuration.setAllowedOrigins(List.of("http://localhost:3000"));
         configuration.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

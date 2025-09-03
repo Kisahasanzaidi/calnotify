@@ -12,6 +12,7 @@ import com.kisa.calnotify.entity.UserEntity;
 import com.kisa.calnotify.service.UserDetailsServiceImpl;
 import com.kisa.calnotify.service.UserService;
 import com.kisa.calnotify.utils.JwtUtil;
+import java.util.*;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,24 +49,29 @@ public class PublicController {
     }
 
 
-    @PostMapping("/login")
-public ResponseEntity<String> login(@RequestBody UserEntity user) {
+   @PostMapping("/login")
+public ResponseEntity<Map<String, String>> login(@RequestBody UserEntity user) {
     try {
+        UserEntity foundUser = userService.getUserByEmail(user.getEmail());
+        if (foundUser == null || !passwordEncoder.matches(user.getPassword(), foundUser.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Incorrect username or password"));
+        }
+        System.out.println(foundUser+ " " +"kisssaaa");
+
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
 
-        if (!passwordEncoder.matches(user.getPassword(), userDetails.getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password");
-        }
+        String jwt = jwtUtil.generateToken(userDetails.getUsername(), foundUser.getUserId().toString(),foundUser.getRole());
 
-        String jwt = jwtUtil.generateToken(userDetails.getUsername());
-        return ResponseEntity.ok(jwt);
+        Map<String, String> response = new HashMap<>();
+        response.put("token", jwt);
+        response.put("userId", foundUser.getUserId().toString());
 
-    } catch (UsernameNotFoundException ex) {
-        log.warn("Login failed: user not found: {}", user.getEmail());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect username or password");
+        return ResponseEntity.ok(response);
+
     } catch (Exception e) {
         log.error("Exception occurred while creating authentication token", e);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server error");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Server error"));
     }
 }
+
 }
