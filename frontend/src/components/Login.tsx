@@ -12,17 +12,17 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    const payload: LoginRequest = { email, password };
-    try {
-      const data = await loginUser(payload);
-      auth?.login(data.token);
-      navigate("/dashboard");
-    } catch {
-      setError("Invalid credentials or server error");
-    }
-  };
+  e.preventDefault();
+  setError("");
+  const payload: LoginRequest = { email, password };
+  try {
+    const data = await loginUser(payload);
+    auth?.login(data.token, data.userId);
+    navigate("/calendar"); 
+  } catch {
+    setError("Invalid credentials or server error");
+  }
+};
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 pt-32">

@@ -19,10 +19,11 @@ public class EventParticipantEntity {
     private ObjectId id;
 
     private ObjectId eventId; 
-    private ObjectId userId;   
+    private ObjectId userId;  
+     private ObjectId createdBy; 
 
     private ParticipantStatus status;
+    private ParticipantRole role;
 
     private Instant joinedAt;
-    private Instant updatedAt;
 }

@@ -4,8 +4,14 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  token: string; 
+  token: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+  };
 }
+
 
 export interface RegisterRequest {
   email: string;

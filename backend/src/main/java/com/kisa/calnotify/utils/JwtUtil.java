@@ -1,5 +1,6 @@
 package com.kisa.calnotify.utils;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Claims;
@@ -8,6 +9,7 @@ import io.jsonwebtoken.security.Keys;
 import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -41,10 +43,13 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(String username) {
-        Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, username);
-    }
+   public String generateToken(String username, String userId,String role) {
+    Map<String, Object> claims = new HashMap<>();
+    claims.put("userId", userId);
+    claims.put("roles", List.of("ROLE_" + role));
+    return createToken(claims, username);
+}
+
 
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
@@ -61,6 +66,22 @@ public class JwtUtil {
     public Boolean validateToken(String token) {
         return !isTokenExpired(token);
     }
+    public List<String> extractRoles(String token) {
+    Claims claims = extractAllClaims(token);
+    Object rolesObj = claims.get("roles");
+    if (rolesObj instanceof List<?> rolesList) {
+        return rolesList.stream().map(Object::toString).toList();
+    }
+    return List.of(); 
+}
+
+   public ObjectId getUserIdFromToken(String token) {
+    Claims claims = extractAllClaims(token);
+    Object userId = claims.get("userId");
+    return new ObjectId(userId.toString());
+}
+
+
 
 
 }

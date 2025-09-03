@@ -33,9 +33,7 @@ public class UserService implements UserDetailsService {
 
         return userRepository.save(user);
     }
-
-
-   
+  
 
     public String loginUser(String email, String password){
         UserEntity user = userRepository.findByEmail(email);
@@ -58,4 +56,8 @@ public class UserService implements UserDetailsService {
                 .roles(user.getRole())
                 .build();
     }
+    public UserEntity getUserByEmail(String email) {
+    return userRepository.findByEmail(email);
+}
+
 }

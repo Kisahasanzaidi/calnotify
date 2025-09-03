@@ -1,3 +1,4 @@
+// src/components/Header.tsx
 import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext.tsx";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +17,7 @@ const Header: React.FC = () => {
       <div className="max-w-7xl mx-auto flex items-center justify-between py-4 px-6">
         <h1
           className="text-2xl font-bold text-indigo-600 cursor-pointer"
-          onClick={() => navigate(auth?.token ? "/dashboard" : "/login")}
+          onClick={() => navigate(auth?.token ? "/calendar" : "/login")}
         >
           CalNotify
         </h1>
@@ -37,20 +38,12 @@ const Header: React.FC = () => {
               </span>
             </>
           ) : (
-            <>
-              <span
-                className="text-gray-600 hover:text-indigo-600 cursor-pointer transition"
-                onClick={() => navigate("/dashboard")}
-              >
-                Dashboard
-              </span>
-              <span
-                className="text-gray-600 hover:text-red-600 cursor-pointer transition"
-                onClick={handleLogout}
-              >
-                Logout
-              </span>
-            </>
+            <span
+              className="text-gray-600 hover:text-red-600 cursor-pointer transition"
+              onClick={handleLogout}
+            >
+              Logout
+            </span>
           )}
         </nav>
       </div>
