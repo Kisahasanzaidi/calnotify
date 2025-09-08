@@ -22,3 +22,9 @@ export interface RegisterRequest {
 export interface RegisterResponse {
   message: string;
 }
+export interface User {
+  userId: string;
+  name: string;
+  email: string;
+}
+

@@ -7,6 +7,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+
 import org.springframework.security.core.userdetails.User;
 
 @Service
@@ -56,8 +59,14 @@ public class UserService implements UserDetailsService {
                 .roles(user.getRole())
                 .build();
     }
-    public UserEntity getUserByEmail(String email) {
+     public UserEntity getUserByEmail(String email) {
     return userRepository.findByEmail(email);
 }
+ public List<UserEntity> getAllUsers() {
+        return userRepository.findAll();
+    }
+   
+
+     
 
 }

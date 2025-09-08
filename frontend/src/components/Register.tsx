@@ -2,21 +2,19 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../api/auth.ts";
 import { RegisterRequest } from "../api/type.ts";
+import { Form, Input, Button, Typography, Alert, message } from "antd";
+
+const { Text, Link } = Typography;
 
 const Register: React.FC = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleRegister = async (values: RegisterRequest) => {
     setError("");
-    const payload: RegisterRequest = { name,  email, password };
     try {
-      await registerUser(payload);
-      alert("Registration successful! Please login.");
+      await registerUser(values);
+      message.success("Registration successful! Please login.");
       navigate("/login");
     } catch {
       setError("Error registering user");
@@ -26,46 +24,56 @@ const Register: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 pt-32">
       <div className="bg-white shadow-lg rounded-2xl p-10 max-w-md w-full">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Create Your Account</h2>
+        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+          Create Your Account
+        </h2>
 
-        {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
+        {error && <Alert message={error} type="error" showIcon className="mb-4" />}
 
-        <form className="flex flex-col gap-4" onSubmit={handleRegister}>
-          <input
-            type="text"
-            placeholder="Full Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            className="p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-          />
-          <button className="mt-2 bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition">
-            Register
-          </button>
-        </form>
+        <Form
+          layout="vertical"
+          onFinish={handleRegister}
+          autoComplete="off"
+          className="flex flex-col gap-4"
+        >
+          <Form.Item
+            label="Full Name"
+            name="name"
+            rules={[{ required: true, message: "Please input your full name!" }]}
+          >
+            <Input placeholder="Full Name" />
+          </Form.Item>
 
-        <p className="text-center text-gray-500 mt-6">
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[
+              { required: true, message: "Please input your email!" },
+              { type: "email", message: "Please enter a valid email!" },
+            ]}
+          >
+            <Input placeholder="Email" />
+          </Form.Item>
+
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[{ required: true, message: "Please input your password!" }]}
+          >
+            <Input.Password placeholder="Password" />
+          </Form.Item>
+
+          <Form.Item>
+            <Button type="primary" htmlType="submit" block>
+              Register
+            </Button>
+          </Form.Item>
+        </Form>
+
+        <Text className="text-center text-gray-500 mt-6">
           Already have an account?{" "}
-          <span onClick={() => navigate("/login")} className="text-indigo-600 cursor-pointer hover:underline">
-            Login
-          </span>
-        </p>
+          <Link onClick={() => navigate("/login")}>Login</Link>
+        </Text>
       </div>
     </div>
   );

@@ -27,4 +27,6 @@ public class EventEntity {
 
 
     private EventStatus status;
+
+    private boolean allDay; 
 }

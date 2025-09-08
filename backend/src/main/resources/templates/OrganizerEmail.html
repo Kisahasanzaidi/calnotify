@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Event Created</title>
+</head>
+<body style="font-family: Arial, sans-serif;">
+  <h2>Hello, <span th:text="${name}">Organizer</span>!</h2>
+  <p>You have successfully created a new event:</p>
+  <p><strong th:text="${eventTitle}">Event Title</strong></p>
+  <p>Date: <span th:text="${start}">Start</span> - <span th:text="${end}">End</span></p>
+  <p>Description: <span th:text="${description}">Description</span></p>
+  <p>You can now invite participants and manage your event in the app.</p>
+  <p>Best regards,<br/>Your Calendar App</p>
+</body>
+</html>

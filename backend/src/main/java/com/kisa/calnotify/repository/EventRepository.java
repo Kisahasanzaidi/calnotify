@@ -2,7 +2,6 @@ package com.kisa.calnotify.repository;
 
 import com.kisa.calnotify.entity.EventEntity;
 import com.kisa.calnotify.entity.EventStatus;
-
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 

@@ -11,11 +11,13 @@ import java.util.Optional;
 
 public interface EventParticipantRepository extends MongoRepository<EventParticipantEntity, ObjectId> {
 
-    List<EventParticipantEntity> findByEventId(ObjectId eventId);
+    List<EventParticipantEntity> findByEventId(ObjectId id);
 
     List<EventParticipantEntity> findByUserId(ObjectId userId);
 
-    List<EventParticipantEntity> findByEventIdAndStatus(ObjectId eventId, ParticipantStatus status);
+    List<EventParticipantEntity> findByEventIdAndStatus(ObjectId id, ParticipantStatus status);
 
-    Optional<EventParticipantEntity> findByEventIdAndUserId(ObjectId eventId, ObjectId userId);
+    Optional<EventParticipantEntity> findByEventIdAndUserId(ObjectId id, ObjectId userId);
+
+    void deleteByEventId(ObjectId id); 
 }
