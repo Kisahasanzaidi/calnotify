@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Modal, Form, Input, DatePicker, Select, Button, Spin, Checkbox } from "antd";
+import { Modal, Form, Input, DatePicker, Select, Button, Spin, Checkbox, message } from "antd";
 import dayjs from "dayjs";
 import { AuthContext } from "../context/AuthContext.tsx";
 import { User } from "../api/type.ts";
@@ -12,7 +12,7 @@ interface Props {
   open: boolean;
   onClose: () => void;
   onCreate: (values: any) => void;
-  selectedDate?: string; 
+  selectedDate?: string;
 }
 
 const CreateEventModal: React.FC<Props> = ({ open, onClose, onCreate, selectedDate }) => {
@@ -40,24 +40,22 @@ const CreateEventModal: React.FC<Props> = ({ open, onClose, onCreate, selectedDa
   }, [open, selectedDate]);
 
   const handleFinish = (values: any) => {
-  const [start, end] = values.dates;
-  const payload = {
-    event: {
-      title: values.title,
-      description: values.description,
-      start: start.toISOString() ||"",
-      end: end.toISOString() ||"",
-      createdBy: auth?.userId,
-      allDay,
-    },
-    participants: values.participants,
+    const [start, end] = values.dates;
+    const payload = {
+      event: {
+        title: values.title,
+        description: values.description,
+        start: start.toISOString() || "",
+        end: end.toISOString() || "",
+        createdBy: auth?.userId,
+        allDay,
+      },
+      participants: values.participants,
+    };
+    onCreate(payload);
+    form.resetFields();
+    setAllDay(false);
   };
-
-  onCreate(payload);
-  form.resetFields();
-  setAllDay(false);
-};
-
 
   return (
     <Modal open={open} onCancel={onClose} footer={null} title="Create Event">
@@ -70,10 +68,7 @@ const CreateEventModal: React.FC<Props> = ({ open, onClose, onCreate, selectedDa
           <Input placeholder="Enter event title" />
         </Form.Item>
 
-        <Form.Item
-          label="Event Description"
-          name="description"
-        >
+        <Form.Item label="Event Description" name="description">
           <Input.TextArea placeholder="Enter event description" />
         </Form.Item>
 

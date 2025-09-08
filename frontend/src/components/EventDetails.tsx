@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 interface EventDetailsProps {
   open: boolean;
   onClose: () => void;
-  event: any; 
+  event: any;
   onSave: (values: any) => void;
   onDelete: (id: string) => void;
 }
@@ -25,10 +25,10 @@ const EventDetails: React.FC<EventDetailsProps> = ({
     try {
       const values = await form.validateFields();
       onSave({ ...values, id: event.id });
-      message.success("Event updated");
       setEditMode(false);
     } catch (err) {
       console.error(err);
+      message.error("Failed to update event");
     }
   };
 
@@ -50,7 +50,6 @@ const EventDetails: React.FC<EventDetailsProps> = ({
             title: event.title,
             description: event.description,
             dates: [dayjs(event.start), dayjs(event.end)],
-            
           }}
         >
           <Form.Item
@@ -64,17 +63,10 @@ const EventDetails: React.FC<EventDetailsProps> = ({
             <Input.TextArea />
           </Form.Item>
           <Form.Item label="Dates" name="dates" rules={[{ required: true }]}>
-            <DatePicker.RangePicker
-              showTime
-              format="YYYY-MM-DD HH:mm"
-            />
+            <DatePicker.RangePicker showTime format="YYYY-MM-DD HH:mm" />
           </Form.Item>
           <Space>
-            <Button
-              icon={<SaveOutlined />}
-              type="primary"
-              onClick={handleSave}
-            >
+            <Button icon={<SaveOutlined />} type="primary" onClick={handleSave}>
               Save
             </Button>
             <Button onClick={() => setEditMode(false)}>Cancel</Button>
@@ -82,21 +74,27 @@ const EventDetails: React.FC<EventDetailsProps> = ({
         </Form>
       ) : (
         <div>
-          <p><strong>Title:</strong> {event.title}</p>
-          <p><strong>Start:</strong> {dayjs(event.start).format("YYYY-MM-DD HH:mm")}</p>
-          <p><strong>End:</strong> {dayjs(event.end).format("YYYY-MM-DD HH:mm")}</p>
-          <p><strong>Description:</strong> {event.description || "No description"}</p>
-          <p><strong>Organizer:</strong> {event.organizer || "Unknown"}</p> 
+          <p>
+            <strong>Title:</strong> {event.title}
+          </p>
+          <p>
+            <strong>Start:</strong> {dayjs(event.start).format("YYYY-MM-DD HH:mm")}
+          </p>
+          <p>
+            <strong>End:</strong> {dayjs(event.end).format("YYYY-MM-DD HH:mm")}
+          </p>
+          <p>
+            <strong>Description:</strong> {event.description || "No description"}
+          </p>
+          <p>
+            <strong>Organizer:</strong> {event.organizer || "Unknown"}
+          </p>
 
           <Space style={{ marginTop: 16 }}>
             <Button icon={<EditOutlined />} onClick={() => setEditMode(true)}>
               Edit
             </Button>
-            <Button
-              danger
-              icon={<DeleteOutlined />}
-              onClick={() => onDelete(event.id)}
-            >
+            <Button danger icon={<DeleteOutlined />} onClick={() => onDelete(event.id)}>
               Delete
             </Button>
           </Space>
