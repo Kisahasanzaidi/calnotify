@@ -1,5 +1,6 @@
 import React, { createContext, useState, ReactNode, FC, useEffect } from "react";
 import { isTokenExpired, getTokenExpiry } from "../helpers/helper.ts";
+import { message } from "antd";
 
 interface AuthContextType {
   token: string | null;
@@ -14,6 +15,24 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [token, setToken] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
 
+  const logout = () => {
+    localStorage.removeItem("jwt");
+    localStorage.removeItem("userId");
+    setToken(null);
+    setUserId(null);
+  };
+
+  const scheduleExpiry = (expiryToken: string) => {
+    const expiry = getTokenExpiry(expiryToken);
+    if (expiry) {
+      const timeLeft = expiry.getTime() - Date.now();
+      setTimeout(() => {
+        logout();
+        message.error("Session expired. Please log in again.", 3); // 3 sec duration
+      }, timeLeft);
+    }
+  };
+
   useEffect(() => {
     const savedToken = localStorage.getItem("jwt");
     const savedUserId = localStorage.getItem("userId");
@@ -21,18 +40,9 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
     if (savedToken && !isTokenExpired(savedToken)) {
       setToken(savedToken);
       setUserId(savedUserId);
-
-      const expiry = getTokenExpiry(savedToken);
-      if (expiry) {
-        const timeLeft = expiry.getTime() - Date.now();
-        setTimeout(() => {
-          logout();
-          alert("Session expired. Please log in again.");
-        }, timeLeft);
-      }
+      scheduleExpiry(savedToken);
     } else {
-      localStorage.removeItem("jwt");
-      localStorage.removeItem("userId");
+      logout();
     }
   }, []);
 
@@ -41,22 +51,7 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
     localStorage.setItem("userId", newUserId);
     setToken(newToken);
     setUserId(newUserId);
-
-    const expiry = getTokenExpiry(newToken);
-    if (expiry) {
-      const timeLeft = expiry.getTime() - Date.now();
-      setTimeout(() => {
-        logout();
-        alert("Session expired. Please log in again.");
-      }, timeLeft);
-    }
-  };
-
-  const logout = () => {
-    localStorage.removeItem("jwt");
-    localStorage.removeItem("userId");
-    setToken(null);
-    setUserId(null);
+    scheduleExpiry(newToken);
   };
 
   return (

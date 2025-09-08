@@ -1,4 +1,3 @@
-// src/components/Header.tsx
 import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext.tsx";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +15,7 @@ const Header: React.FC = () => {
     <header className="w-full bg-white shadow-md fixed top-0 left-0 z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between py-4 px-6">
         <h1
-          className="text-2xl font-bold text-indigo-600 cursor-pointer"
+          className="text-2xl font-bold text-indigo-600 cursor-pointer hover:text-indigo-800 transition-colors duration-200"
           onClick={() => navigate(auth?.token ? "/calendar" : "/login")}
         >
           CalNotify
@@ -25,13 +24,13 @@ const Header: React.FC = () => {
           {!auth?.token ? (
             <>
               <span
-                className="text-gray-600 hover:text-indigo-600 cursor-pointer transition"
+                className="text-gray-600 hover:text-indigo-600 cursor-pointer transition-colors duration-200"
                 onClick={() => navigate("/login")}
               >
                 Login
               </span>
               <span
-                className="text-gray-600 hover:text-indigo-600 cursor-pointer transition"
+                className="text-gray-600 hover:text-indigo-600 cursor-pointer transition-colors duration-200"
                 onClick={() => navigate("/register")}
               >
                 Register
@@ -39,7 +38,7 @@ const Header: React.FC = () => {
             </>
           ) : (
             <span
-              className="text-gray-600 hover:text-red-600 cursor-pointer transition"
+              className="text-gray-600 hover:text-red-600 cursor-pointer transition-colors duration-200"
               onClick={handleLogout}
             >
               Logout

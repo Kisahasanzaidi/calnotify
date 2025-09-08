@@ -3,23 +3,28 @@ import { AuthContext } from "../context/AuthContext.tsx";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../api/auth.ts";
 import { LoginRequest } from "../api/type.ts";
-import { Form, Input, Button, Typography, Alert } from "antd";
+import { Form, Input, Button, Typography, Alert, Spin, message } from "antd";
 
 const { Text, Link } = Typography;
 
 const Login: React.FC = () => {
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const auth = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogin = async (values: LoginRequest) => {
     setError("");
+    setLoading(true);
     try {
       const data = await loginUser(values);
       auth?.login(data.token, data.userId);
+      message.success("Login successful");
       navigate("/calendar");
     } catch {
       setError("Invalid credentials or server error");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -30,18 +35,13 @@ const Login: React.FC = () => {
 
         {error && <Alert message={error} type="error" showIcon className="mb-4" />}
 
-        <Form
-          layout="vertical"
-          onFinish={handleLogin}
-          autoComplete="off"
-          className="flex flex-col gap-4"
-        >
+        <Form layout="vertical" onFinish={handleLogin} autoComplete="off" className="flex flex-col gap-4">
           <Form.Item
             label="Email"
             name="email"
             rules={[{ required: true, message: "Please input your email!" }]}
           >
-            <Input placeholder="Email" />
+            <Input placeholder="Email" disabled={loading} />
           </Form.Item>
 
           <Form.Item
@@ -49,12 +49,12 @@ const Login: React.FC = () => {
             name="password"
             rules={[{ required: true, message: "Please input your password!" }]}
           >
-            <Input.Password placeholder="Password" />
+            <Input.Password placeholder="Password" disabled={loading} />
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" block>
-              Login
+            <Button type="primary" htmlType="submit" block disabled={loading}>
+              {loading ? <Spin size="small" /> : "Login"}
             </Button>
           </Form.Item>
         </Form>

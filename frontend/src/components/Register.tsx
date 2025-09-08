@@ -2,22 +2,26 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../api/auth.ts";
 import { RegisterRequest } from "../api/type.ts";
-import { Form, Input, Button, Typography, Alert, message } from "antd";
+import { Form, Input, Button, Typography, Alert, message, Spin } from "antd";
 
 const { Text, Link } = Typography;
 
 const Register: React.FC = () => {
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleRegister = async (values: RegisterRequest) => {
     setError("");
+    setLoading(true);
     try {
       await registerUser(values);
       message.success("Registration successful! Please login.");
       navigate("/login");
     } catch {
       setError("Error registering user");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -30,18 +34,13 @@ const Register: React.FC = () => {
 
         {error && <Alert message={error} type="error" showIcon className="mb-4" />}
 
-        <Form
-          layout="vertical"
-          onFinish={handleRegister}
-          autoComplete="off"
-          className="flex flex-col gap-4"
-        >
+        <Form layout="vertical" onFinish={handleRegister} autoComplete="off" className="flex flex-col gap-4">
           <Form.Item
             label="Full Name"
             name="name"
             rules={[{ required: true, message: "Please input your full name!" }]}
           >
-            <Input placeholder="Full Name" />
+            <Input placeholder="Full Name" disabled={loading} />
           </Form.Item>
 
           <Form.Item
@@ -52,7 +51,7 @@ const Register: React.FC = () => {
               { type: "email", message: "Please enter a valid email!" },
             ]}
           >
-            <Input placeholder="Email" />
+            <Input placeholder="Email" disabled={loading} />
           </Form.Item>
 
           <Form.Item
@@ -60,12 +59,12 @@ const Register: React.FC = () => {
             name="password"
             rules={[{ required: true, message: "Please input your password!" }]}
           >
-            <Input.Password placeholder="Password" />
+            <Input.Password placeholder="Password" disabled={loading} />
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" block>
-              Register
+            <Button type="primary" htmlType="submit" block disabled={loading}>
+              {loading ? <Spin size="small" /> : "Register"}
             </Button>
           </Form.Item>
         </Form>

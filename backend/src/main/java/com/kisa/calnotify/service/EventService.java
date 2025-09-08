@@ -2,8 +2,10 @@ package com.kisa.calnotify.service;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.kisa.calnotify.dto.CalenderDTO;
 import com.kisa.calnotify.dto.ParticipantsDTO;
@@ -37,6 +39,14 @@ public class EventService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+     public class EventNotFoundException extends RuntimeException {
+    public EventNotFoundException(String message) {
+        super(message);
+    }
+   }
+
 
     public EventEntity createEvent(EventEntity event, List<ObjectId> participants) {
         if (event.getStatus() == null) {
@@ -154,23 +164,27 @@ public class EventService {
                 }).collect(Collectors.toList());
     }
 
-    public EventEntity updateEvent(ObjectId id, EventEntity updatedEvent) {
-        EventEntity existing = eventRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Event not found"));
+   public EventEntity updateEvent(ObjectId id, EventEntity updatedEvent) {
+    EventEntity existing = eventRepository.findById(id)
+        .orElseThrow(() -> new EventNotFoundException("Event not found with id: " + id));
 
-        if (updatedEvent.getTitle() != null) existing.setTitle(updatedEvent.getTitle());
-        if (updatedEvent.getDescription() != null) existing.setDescription(updatedEvent.getDescription());
-        if (updatedEvent.getStart() != null) existing.setStart(updatedEvent.getStart());
-        if (updatedEvent.getEnd() != null) existing.setEnd(updatedEvent.getEnd());
-        existing.setAllDay(updatedEvent.isAllDay());
-        if (updatedEvent.getStatus() != null) existing.setStatus(updatedEvent.getStatus());
+    if (updatedEvent.getTitle() != null) existing.setTitle(updatedEvent.getTitle());
+    if (updatedEvent.getDescription() != null) existing.setDescription(updatedEvent.getDescription());
+    if (updatedEvent.getStart() != null) existing.setStart(updatedEvent.getStart());
+    if (updatedEvent.getEnd() != null) existing.setEnd(updatedEvent.getEnd());
+    existing.setAllDay(updatedEvent.isAllDay());
+    if (updatedEvent.getStatus() != null) existing.setStatus(updatedEvent.getStatus());
 
-        return eventRepository.save(existing);
+    return eventRepository.save(existing);
+}
+
+@Transactional
+public void deleteEvent(ObjectId id) {
+    if (!eventRepository.existsById(id)) {
+        throw new EventNotFoundException("Event not found with id: " + id);
     }
+    eventParticipantRepository.deleteByEventId(id);
+    eventRepository.deleteById(id);
+}
 
-    @Transactional
-    public void deleteEvent(ObjectId id) {
-        eventParticipantRepository.deleteByEventId(id);
-        eventRepository.deleteById(id);
-    }
 }
