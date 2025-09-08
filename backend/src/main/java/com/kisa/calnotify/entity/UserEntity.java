@@ -19,7 +19,7 @@ import lombok.Setter;
 public class UserEntity {
 
     @Id  
-    private ObjectId userId;
+    private String userId;
      @NonNull
     private String email;
     @NonNull

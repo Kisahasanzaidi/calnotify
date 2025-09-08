@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Event Invitation</title>
+</head>
+<body style="font-family: Arial, sans-serif;">
+  <h2>Hello, <span th:text="${name}">User</span>!</h2>
+  <p>You have been invited to the following event:</p>
+  <p><strong th:text="${eventTitle}">Event Title</strong></p>
+  <p>Date: <span th:text="${start}">Start</span> - <span th:text="${end}">End</span></p>
+  <p>Description: <span th:text="${description}">Description</span></p>
+  <p>Please check the app for more details and RSVP.</p>
+  <p>Best regards,<br/>Your Calendar App</p>
+</body>
+</html>
