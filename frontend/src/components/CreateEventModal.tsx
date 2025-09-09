@@ -73,7 +73,7 @@ const CreateEventModal: React.FC<Props> = ({ open, onClose, onCreate, selectedDa
         </Form.Item>
 
         <Form.Item
-          label="Guests"
+          label="Invite Participants"
           name="participants"
           rules={[{ required: true, message: "Please select at least one guest" }]}
         >
