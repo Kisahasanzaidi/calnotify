@@ -1,15 +1,16 @@
 import axios from "axios";
 
+
 const API = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: import.meta.env.VITE_API_URL, 
 });
 
 API.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("jwt"); // make sure you store token after login
+    const token = localStorage.getItem("jwt"); 
     if (token) {
       config.headers = config.headers || {};
-      config.headers["Authorization"] = `Bearer ${token}`; // this is required by your controller
+      config.headers["Authorization"] = `Bearer ${token}`; 
     }
     return config;
   },
