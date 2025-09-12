@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+  mongo:
+    image: mongo:6.0
+    container_name: calnotify_mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    build: ./backend
+    container_name: calnotify_backend
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    # No env_file needed; backend reads from application.properties
+
+  frontend:
+    build: ./frontend
+    container_name: calnotify_frontend
+    restart: always
+    ports:
+      - "3000:80"
+    env_file:
+      - ./frontend/.env
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:
